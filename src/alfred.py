@@ -11,7 +11,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 You should run your script via /bin/bash with all escape options ticked.
 The command line should be
 
-python3 yourscript.py "{query}" arg2 arg3 ...
+python yourscript.py "{query}" arg2 arg3 ...
 """
 
 
@@ -19,8 +19,8 @@ UNESCAPE_CHARACTERS = u""" ;()"""
 
 _MAX_RESULTS_DEFAULT = 9
 
-with open('info.plist', 'rb') as fp :
-    preferences = plistlib.loads(fp.read())
+with open('info.plist', 'rb') as f:
+    preferences = plistlib.load(f)
 bundleid = preferences['bundleid']
 
 
@@ -111,10 +111,8 @@ def work(volatile):
 
 def config_set(key, value, volatile=True):
     filepath = os.path.join(work(volatile), 'config.plist')
-    try:
-        conf = plistlib.readPlist(filepath)
-    except IOError:
-        conf = {}
+    with open(filepath, 'rb') as f:
+        conf = plistlib.load(f)
     conf[key] = value
     plistlib.writePlist(conf, filepath)
 
